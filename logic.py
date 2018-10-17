@@ -13,24 +13,46 @@ def wins(a, b):
         return b == 'schere'
     print("error in algorithm")
 
+
+winnings = []
+userDid = []
+pcDid = []
 possibleValues = ['schere', 'stein', 'papier']
-ipt = ''
-lastHuman = ''
+userDoes = ''
 lastPC = possibleValues[random.randint(0,2)]
 count = 0
-while(ipt != 'exit'):
-    count += 1
+while(userDoes != 'exit'):
+    pcDoes = ''
+    if (count == 0):
+        pcDoes = possibleValues[random.randint(0,2)]
+    else:
+        #predict here!
+        pcDoes = possibleValues[random.randint(0,0)]
+
     invalidInput = True
     while(invalidInput):
-        ipt = input("Runde " + str(count) + '. Was nimmst du? ')
-        if (ipt in possibleValues):
+        userDoes = input("Runde " + str(count + 1) + '. Was nimmst du? ')
+        if (userDoes in possibleValues):
             invalidInput = False
-    lastHuman = ipt
-    userWon = wins(lastHuman, lastPC)
-    print(lastPC + '!')
+        elif (userDoes == 'exit'):
+            break
+    userWon = wins(userDoes, pcDoes)
+    
+    winnings.append(userWon)
+    userDid.append(userDoes)
+    pcDid.append(pcDoes)
+
+    print(pcDoes + '!')
     if (userWon == 1):
         print('Du gewinnst!')
     elif (userWon == 0):
         print('Du verlierst!')
     else:
         print('Unentschieden!')
+
+    count += 1
+    
+    print('------ HISTORY ------')
+    for i in range(count):
+        print('Runde ' + str(i) + ': Du ' + str(userDid[i]) + ' ich ' + str(pcDid[i]) + ', Stand ' + str(winnings[i])) 
+    print('------ HISTORY END ------')
