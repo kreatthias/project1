@@ -1,13 +1,19 @@
 from sklearn import tree
 import numpy
+from sklearn.preprocessing import OneHotEncoder
 
-X = [[1,5,15],[76,-4,-14],[-1,-500,1989]]
-Y = ['pr','pr','mr']
+enc = OneHotEncoder(handle_unknown='ignore')
+X = [['schere', 1], ['stein', 2], ['papier', 3]]
+enc.fit(X)
+print(X)
+
+X = [[-1,-500,'s']]
+Y = ['pr']
 
 clf_tree = tree.DecisionTreeClassifier();
 clf_tree = clf_tree.fit(X,Y);
 
-test_data = numpy.array([2,4,4]).reshape(1,-1)
+test_data = [[1,1,'s']]
 
 prediction_tree = clf_tree.predict(test_data);
 

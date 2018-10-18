@@ -4,15 +4,25 @@ import random
 from sklearn import tree
 import numpy as np
 
+schere = (1, 0, 0)
+stein =  (0, 1, 0)
+papier = (0, 0, 1)
+
+toNumeric = {'schere':schere,
+        'stein':stein,
+        'papier':papier}
+
+validInput = ['schere', 'stein', 'papier', 'exit']
+
 def wins(a, b):
-    if (a == b):
+    if(a == b):
         return 0.5
-    if(a == 'schere'):
-        return int(b == 'papier')
-    if(a == 'papier'):
-        return int(b == 'stein')
-    if(a == 'stein'):
-        return int(b == 'schere')
+    if(a == schere):
+        return b == papier
+    if(a == papier):
+        return b == stein
+    if(a == stein):
+        return b == schere
     print("error in algorithm")
 
 def reacted(a, b):
@@ -25,7 +35,7 @@ userDid = []
 pcDid = []
 trainingSource = []
 trainingTarget = []
-possibleValues = ['schere', 'stein', 'papier']
+possibleValues = [schere, stein, papier]
 userDoes = ''
 count = 0
 while(userDoes != 'exit'):
@@ -35,26 +45,28 @@ while(userDoes != 'exit'):
     else:
         X = trainingSource[0:count-2]
         Y = trainingTarget
-        print(X, Y)
+        print(X, Y, count)
         model.fit(X, Y)
-        prediction = model.predict(np.array(trainingSource[count-1]).reshape(1,-1))
-        print('my prediction is ' + prediction)
+        prediction = model.predict([trainingSource[count-3]])
+        print(prediction)
         pcDoes = possibleValues[random.randint(0,0)]
 
     invalidInput = True
     while(invalidInput):
-        userDoes = input("Runde " + str(count + 1) + '. Was nimmst du? ')
-        if (userDoes in possibleValues):
-            invalidInput = False
-        elif (userDoes == 'exit'):
-            break
+        userSays = input("Runde " + str(count + 1) + '. Was nimmst du? ').lower()
+        if (userSays in validInput):
+            if (userSays == 'exit'):
+                break
+            else:
+                invalidInput = False
+    userDoes = toNumeric[userSays]
     userWin = wins(userDoes, pcDoes)
     
     userWon.append(userWin)
     userDid.append(userDoes)
     pcDid.append(pcDoes)
 
-    print(pcDoes + '!')
+    print(str(pcDoes) + '!')
     if (userWin == 1):
         print('Du gewinnst!')
     elif (userWin == 0):
@@ -72,7 +84,7 @@ while(userDoes != 'exit'):
         react = reacted(userDid[count], pcDid[count-1])
         win = userWon[count]
         does = userDid[count]
-        trainingSource.append([[change],[react],[win],[does]])
+        trainingSource.append([change,react,win])
         if (count >=2):
             didNow = userDid[count]
             trainingTarget.append(didNow)
